@@ -1,0 +1,140 @@
+<mujoco model="biped_schematics">
+    <compiler angle="radian" meshdir="./mesh/" />
+    <!-- njmax="500" This defines the maximum number of joints. It pre-allocates memory space to accommodate up to 500 joints. -->
+    <!--  nconmax="100" Defines the maximum number of contact points that can exist concurrently. It pre-allocates memory space to accommodate up to 100 contact points.-->
+    <size njmax="500" nconmax="100" />
+     <!-- default attributes for elements within the scene or model. -->
+    <default>
+        <!-- Sets default attributes for geometries. -->
+        <geom conaffinity="0" contype="1" type="mesh" density="1000" rgba="0.4 0.6 .8 1"/>
+        <!-- Sets default attributes for joints. -->
+        <joint armature="0" damping="1" limited="true" />
+        <!-- Sets default attributes for motors. -->
+        <motor ctrllimited="true" ctrlrange="-0.4 0.4"/>
+        <position ctrllimited="true" ctrlrange="-1 1" kp="0.1"/>
+    </default>
+    <asset>
+        <mesh name="base_link" file="base_link.stl" scale="0.001 0.001 0.001" />
+        <mesh name="hip_2" file="hip_2.stl" scale="0.001 0.001 0.001" />
+        <mesh name="hip_1" file="hip_1.stl" scale="0.001 0.001 0.001" />
+        <mesh name="hip2_1" file="hip2_1.stl" scale="0.001 0.001 0.001" />
+        <mesh name="hip2_2" file="hip2_2.stl" scale="0.001 0.001 0.001" />
+        <mesh name="thigh_1" file="thigh_1.stl" scale="0.001 0.001 0.001" />
+        <mesh name="thigh_2" file="thigh_2.stl" scale="0.001 0.001 0.001" />
+        <mesh name="shank_1" file="shank_1.stl" scale="0.001 0.001 0.001" />
+        <mesh name="shank_2" file="shank_2.stl" scale="0.001 0.001 0.001" />
+        <mesh name="ankle_1" file="ankle_1.stl" scale="0.001 0.001 0.001" />
+        <mesh name="ankle_2" file="ankle_2.stl" scale="0.001 0.001 0.001" />
+        <mesh name="foot_1" file="foot_1.stl" scale="0.001 0.001 0.001" />
+        <mesh name="foot_2" file="foot_2.stl" scale="0.001 0.001 0.001" />
+        <mesh name="top_body_1" file="top_body_1.stl" scale="0.001 0.001 0.001" />
+        <!-- 增加材质 -->
+        <texture builtin="gradient" height="100" rgb1="1 1 1" rgb2="0 0 0" type="skybox" width="100"/>
+        <texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
+        <texture builtin="checker" height="100" name="texplane" rgb1="0.13 0.5 0.13" rgb2="0.78 0.38 0.078" type="2d" width="100"/>
+        <material name="MatPlane" reflectance="0.5" shininess="1" specular="1" texrepeat="60 60" texture="texplane"/>
+        <material name="geom" texture="texgeom" texuniform="true"/>
+    </asset>
+    <worldbody>
+    <!-- 修改整体机器人自由度 -->
+        <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3" specular=".1 .1 .1" castshadow="false"/>
+        <geom conaffinity="1" condim="6" material="MatPlane" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1" size="40 40 40" type="plane" friction="2 0.5 0.5"/>
+        <body name="robot" pos="0 0 0.625">
+            <camera name="track" mode="trackcom" pos="0 3 0.3" xyaxes="-1 0 0 0 0 1"/>
+            <joint axis="1 0 0" type="slide" armature="0" limited="false" />
+            <joint axis="0 1 0" type="slide" armature="0" limited="false" />
+            <joint axis="0 0 1" type="slide" armature="0" limited="false" />
+            <joint axis="1 0 0" type="hinge" armature="0" limited="false" />
+            <joint axis="0 1 0" type="hinge" armature="0" limited="false" />
+            <joint axis="0 0 1" type="hinge" armature="0" limited="false" />
+<!--            <freejoint/>-->
+            <geom type="mesh" contype="0" conaffinity="0" group="1" mesh="base_link" />
+            <geom type="mesh" mesh="base_link" />
+            <geom type="mesh" contype="0" conaffinity="0" group="1" mesh="top_body_1" />
+            <geom type="mesh" mesh="top_body_1" />
+            <body name="hip_2" pos="0 0.075 0">
+                <inertial pos="0.0594432 0 0" quat="0 0.707107 0 0.707107" mass="1.90413" diaginertia="0.00194557 0.00125193 0.00119981" />
+                <joint name="hip_x_left" pos="0 0 0" axis="1 0 0" limited="true" range="-0.785398 0.785398" damping="5" stiffness="10" armature="0.01" />
+                <geom pos="0 -0.075 0" type="mesh" contype="0" conaffinity="0" group="1" mesh="hip_2" />
+                <body name="hip2_1" pos="0.06 0 -0.02">
+                    <inertial pos="0 0 -0.07" quat="0.5 0.5 -0.5 0.5" mass="4.50976" diaginertia="0.00683402 0.00683402 0.00615179" />
+                    <joint name="hip_z_left" pos="0 0 0" axis="0 0 -1" limited="true" range="-0.5 0.5" damping="5" stiffness="10" armature="0.01" />
+                    <geom pos="-0.06 -0.075 0.02" type="mesh" contype="0" conaffinity="0" group="1" mesh="hip2_1" />
+                    <geom pos="-0.06 -0.075 0.02" type="mesh" mesh="hip2_1" />
+                    <body name="thigh_1" pos="0 0 -0.07">
+                        <inertial pos="0.0152464 0 -0.174267" quat="0.706434 -0.0308436 -0.0308436 0.706434" mass="1.10913" diaginertia="0.00499482 0.00434498 0.00111198" />
+                        <joint name="hip_y_left" pos="0 0 0" axis="0 1 0" limited="true" range="-1.5708 1.0472" damping="5" stiffness="20" armature="0.01"/>
+                        <geom pos="-0.06 -0.075 0.09" type="mesh" contype="0" conaffinity="0" group="1" mesh="thigh_1" />
+                        <geom pos="-0.06 -0.075 0.09" type="mesh" mesh="thigh_1" />
+                        <body name="shank_1" pos="0.020917 0 -0.239087">
+                            <inertial pos="-0.0107979 0 -0.123425" quat="0.706434 0.0308436 0.0308436 0.706434" mass="2.59106" diaginertia="0.00309062 0.00282473 0.001746" />
+                            <joint name="knee_left" pos="0 0 0" axis="0 1 0" limited="true" range="-0.5 1.5708" stiffness="1" armature="0.0060"/>
+                            <geom pos="-0.080917 -0.075 0.329087" type="mesh" contype="0" conaffinity="0" group="1" mesh="shank_1" />
+                            <body name="ankle_1" pos="-0.02266 0 -0.25901">
+                                <inertial pos="-1.09986e-07 0 -4.047e-07" quat="0.5 0.5 -0.5 0.5" mass="0.0786273" diaginertia="5.95976e-06 5.54236e-06 5.54236e-06" />
+                                <joint name="ankle_y_left" pos="0 0 0" axis="0 1 0" limited="true" range="-0.785398 0.785398" stiffness="4" armature="0.0008"/>
+                                <geom pos="-0.058257 -0.075 0.588097" type="mesh" contype="0" conaffinity="0" group="1" mesh="ankle_1" />
+                                <body name="foot_1" pos="0 0 0">
+                                    <inertial pos="0.0424999 0 -0.0350004" quat="0 0.707107 0 0.707107" mass="0.4452" diaginertia="0.00137363 0.00116958 0.00027083" />
+                                    <joint name="ankle_x_left" pos="0 0 0" axis="1 0 0" limited="true" range="-0.523599 0.523599" stiffness="1"  armature="0.0006"/>
+                                    <geom pos="-0.058257 -0.075 0.588097" type="mesh" contype="0" conaffinity="0" group="1" mesh="foot_1" />
+                                    <geom size="0.0875 0.04 0.015" pos="0.043 0 -0.035" type="box" />
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body name="hip_1" pos="0 -0.075 0">
+                <inertial pos="0.0594432 0 0" quat="0 0.707107 0 0.707107" mass="1.90413" diaginertia="0.00194557 0.00125193 0.00119981" />
+                <joint name="hip_x_right" pos="0 0 0" axis="1 0 0" limited="true" range="-0.785398 0.785398" damping="5" stiffness="10" armature="0.01"/>
+                <geom pos="0 0.075 0" type="mesh" contype="0" conaffinity="0" group="1" mesh="hip_1" />
+                <body name="hip2_2" pos="0.06 0 -0.02">
+                    <inertial pos="0 0 -0.07" quat="0.5 0.5 -0.5 0.5" mass="4.50976" diaginertia="0.00683402 0.00683402 0.00615179" />
+                    <joint name="hip_z_right" pos="0 0 0" axis="0 0 -1" limited="true" range="-0.5 0.5" damping="5" stiffness="10" armature="0.01"/>
+                    <geom pos="-0.06 0.075 0.02" type="mesh" contype="0" conaffinity="0" group="1" mesh="hip2_2" />
+                    <geom pos="-0.06 0.075 0.02" type="mesh" mesh="hip2_2" />
+                    <body name="thigh_2" pos="0 0 -0.07">
+                        <inertial pos="0.0152464 0 -0.174267" quat="0.706434 -0.0308436 -0.0308436 0.706434" mass="1.10913" diaginertia="0.00499482 0.00434498 0.00111198" />
+                        <joint name="hip_y_right" pos="0 0 0" axis="0 1 0" limited="true" range="-1.5708 1.0472" damping="5" stiffness="20" armature="0.01"/>
+                        <geom pos="-0.06 0.075 0.09" type="mesh" contype="0" conaffinity="0" group="1" mesh="thigh_2" />
+                        <geom pos="-0.06 0.075 0.09" type="mesh" mesh="thigh_2" />
+                        <body name="shank_2" pos="0.020917 0 -0.239087">
+                            <inertial pos="-0.0107979 0 -0.123425" quat="0.706434 0.0308436 0.0308436 0.706434" mass="2.59106" diaginertia="0.00309062 0.00282473 0.001746" />
+                            <joint name="knee_right" pos="0 0 0" axis="0 1 0" limited="true" range="-0.5 1.5708" stiffness="1" armature="0.0060"/>
+                            <geom pos="-0.080917 0.075 0.329087" type="mesh" contype="0" conaffinity="0" group="1" mesh="shank_2" />
+                            <body name="ankle_2" pos="-0.02266 0 -0.25901">
+                                <inertial pos="-1.09986e-07 0 -4.047e-07" quat="0.5 0.5 -0.5 0.5" mass="0.0786273" diaginertia="5.95976e-06 5.54236e-06 5.54236e-06" />
+                                <joint name="ankle_y_right" pos="0 0 0" axis="0 1 0" limited="true" range="-0.785398 0.785398" stiffness="4" armature="0.0008"/>
+                                <geom pos="-0.058257 0.075 0.588097" type="mesh" contype="0" conaffinity="0" group="1" mesh="ankle_2" />
+                                <body name="foot_2" pos="0 0 0">
+                                    <inertial pos="0.0424999 0 -0.0350004" quat="0 0.707107 0 0.707107" mass="0.4452" diaginertia="0.00137363 0.00116958 0.00027083" />
+                                    <joint name="ankle_x_right" pos="0 0 0" axis="1 0 0" limited="true" range="-0.523599 0.523599" stiffness="1"  armature="0.0006"/>
+                                    <geom pos="-0.058257 0.075 0.588097" type="mesh" contype="0" conaffinity="0" group="1" mesh="foot_2" />
+                                    <geom size="0.0875 0.04 0.015" pos="0.043 0 -0.035" type="box" />
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+<!-- 增加关节驱动 -->
+    <actuator>
+        <motor name="hip_x_left" joint="hip_x_left" gear="40"/>
+        <motor name="hip_z_left" joint="hip_z_left" gear="40"/>
+        <motor name="hip_y_left" joint="hip_y_left" gear="120"/>
+        <motor name="knee_left" joint="knee_left" gear="80"/>
+        <motor name="ankle_y_left" joint="ankle_y_left" gear="20"/>
+        <motor name="ankle_x_left" joint="ankle_x_left" gear="20"/>
+
+        <motor name="hip_x_right" joint="hip_x_right" gear="40"/>
+        <motor name="hip_z_right" joint="hip_z_right" gear="40"/>
+        <motor name="hip_y_right" joint="hip_y_right" gear="120"/>
+        <motor name="knee_right" joint="knee_right" gear="80"/>
+        <motor name="ankle_y_right" joint="ankle_y_right" gear="20"/>
+        <motor name="ankle_x_right" joint="ankle_x_right" gear="20"/>
+    </actuator>
+</mujoco>
